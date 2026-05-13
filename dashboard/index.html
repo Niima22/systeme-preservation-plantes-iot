@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Système de Préservation des Plantes</title>
+
+  <style>
+    /* ===============================
+       Style général de la page
+    =============================== */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      transition: 0.3s;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+      color: #1f3d2b;
+    }
+
+    /* ===============================
+       Cartes d’affichage des données
+    =============================== */
+    .card {
+      background: white;
+      padding: 25px;
+      margin: 20px auto;
+      width: 60%;
+      border-radius: 15px;
+      box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+      font-size: 22px;
+    }
+
+    .value {
+      font-size: 30px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    /* ===============================
+       Zone d’alerte
+    =============================== */
+    #alertBox {
+      margin: 25px auto;
+      padding: 18px;
+      width: 60%;
+      border-radius: 12px;
+      font-weight: bold;
+      display: none;
+      transition: 0.3s;
+      font-size: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🌿 Système Intelligent de Préservation des Plantes</h1>
+
+  <!-- ===============================
+       Affichage des valeurs
+  =============================== -->
+  <div class="card">
+    🌡️ Température ambiante
+    <div class="value" id="temp">-- °C</div>
+  </div>
+
+  <div class="card">
+    💧 Taux d’humidité
+    <div class="value" id="hum">-- %</div>
+  </div>
+
+  <div class="card">
+    🌫️ Qualité de l’air
+    <div class="value" id="air">--</div>
+  </div>
+
+  <!-- Zone d’alerte dynamique -->
+  <div id="alertBox"></div>
+
+  <script>
+    // ===============================
+    // Connexion à ThingSpeak
+    // ===============================
+    const channelID = "3356898";
+    const readAPI = "SDLXBAJ1C5FKYH7W";
+
+    // ===============================
+    // Récupération des données
+    // ===============================
+    function getData() {
+      fetch(`https://api.thingspeak.com/channels/${channelID}/feeds/last.json?api_key=${readAPI}`)
+        .then(response => response.json())
+        .then(data => {
+
+          // Conversion des valeurs reçues
+          let temp = parseFloat(data.field1);
+          let hum = parseFloat(data.field2);
+          let air = parseFloat(data.field3);
+
+          // Affichage dans l’interface
+          document.getElementById("temp").innerHTML = temp + " °C";
+          document.getElementById("hum").innerHTML = hum + " %";
+          document.getElementById("air").innerHTML = air;
+
+          let alertBox = document.getElementById("alertBox");
+
+          // ===============================
+          // Gestion des alertes
+          // ===============================
+          if (air > 80) {
+            document.body.style.backgroundColor = "#ffd6d6";
+            alertBox.style.display = "block";
+            alertBox.style.backgroundColor = "#ff4d4d";
+            alertBox.style.color = "white";
+            alertBox.innerHTML = "⚠️ Air défavorable pour les plantes !";
+          }
+          else if (temp > 35) {
+            document.body.style.backgroundColor = "#ffe0b3";
+            alertBox.style.display = "block";
+            alertBox.style.backgroundColor = "#ffa500";
+            alertBox.style.color = "black";
+            alertBox.innerHTML = "🔥 Température trop élevée pour les plantes !";
+          }
+          else if (hum < 30) {
+            document.body.style.backgroundColor = "#d6ecff";
+            alertBox.style.display = "block";
+            alertBox.style.backgroundColor = "#3399ff";
+            alertBox.style.color = "white";
+            alertBox.innerHTML = "💧 Humidité insuffisante ! Arrosage recommandé.";
+          }
+          else {
+            document.body.style.backgroundColor = "#e8f5e9";
+            alertBox.style.display = "block";
+            alertBox.style.backgroundColor = "#4CAF50";
+            alertBox.style.color = "white";
+            alertBox.innerHTML = "✅ Conditions favorables pour les plantes.";
+          }
+        })
+        .catch(error => console.log("Erreur:", error));
+    }
+
+    // Actualisation automatique toutes les 10 secondes
+    setInterval(getData, 10000);
+    getData();
+  </script>
+
+</body>
+</html>
