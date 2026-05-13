@@ -26,7 +26,7 @@ Capteurs → Arduino → ThingSpeak → Dashboard Web
 ## 📸 Captures
 
 ### Circuit Tinkercad
-<img width="1919" height="1079" alt="9560ef50-5585-4b07-9a89-9bca6f049fed" src="https://github.com/user-attachments/assets/1641f13f-b48c-48bf-b3ab-b44b00655e55" />
+<img width="1631" height="868" alt="image" src="https://github.com/user-attachments/assets/2f53adfc-108d-4864-9a4b-fea15c8fc512" />
 
 ### ThingSpeak
 <img width="1095" height="766" alt="image" src="https://github.com/user-attachments/assets/347c97b4-7568-4532-9836-751279a9959e" />
